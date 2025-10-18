@@ -10,6 +10,16 @@ CREATE TABLE menu (
   gambar VARCHAR(255)
 );
 
+CREATE TABLE produk (
+  id_produk INT AUTO_INCREMENT PRIMARY KEY,
+  nama_produk VARCHAR(100) NOT NULL,
+  kategori VARCHAR(50) NOT NULL,
+  harga DECIMAL(10,2) NOT NULL,
+  stok INT DEFAULT 0,
+  deskripsi TEXT,
+  gambar VARCHAR(255)
+);
+
 
 CREATE TABLE pelanggan (
   id_pelanggan INT AUTO_INCREMENT PRIMARY KEY,

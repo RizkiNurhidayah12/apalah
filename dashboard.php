@@ -14,9 +14,11 @@
       <img src="logo.png" alt="Logo" class="h-20 w-20">
       <h1 class="text-2xl font-bold">Poskoria Street Coffe</h1>
       <nav class="space-x-6">
-        <a href="#menu" class="hover:text-amber-400">Menu</a>
+        <a href="#menu" class="hover:text-amber-400">Food & Goods</a>
         <a href="#about" class="hover:text-amber-400">Tentang</a>
         <a href="#contact" class="hover:text-amber-400">Contact</a>
+        <a href="profil_admin.php" class="mr-4 hover:underline">Profil</a>
+        <a href="logout.php" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg">Logout</a>
       </nav>
     </div>
   </header>
@@ -31,7 +33,7 @@
   </section>
 
   <!-- Menu -->
-  <section id="menu" class="py-20 container mx-auto px-4">
+   <section id="menu" class="py-20 container mx-auto px-4"></section>
     <h3 class="text-3xl font-bold text-center mb-12">Menu Andalan</h3>
     <div class="grid md:grid-cols-3 gap-8">
       <div class="bg-white shadow-lg rounded-2xl overflow-hidden hover:scale-105 transition">
