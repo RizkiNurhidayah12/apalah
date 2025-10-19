@@ -2,7 +2,7 @@
 session_start();
 
 // Koneksi ke database
-$conn = new mysqli("localhost", "root", "", "project_kelompok");
+$conn = new mysqli("localhost", "root", "", "frontend_db");
 
 // Cek koneksi
 if ($conn->connect_error) {
