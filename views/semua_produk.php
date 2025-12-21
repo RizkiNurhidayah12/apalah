@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+// Cek apakah user sudah login
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$pesan = '';
+if (isset($_GET['pesan']) && $_GET['pesan'] === 'ditambahkan') {
+    $pesan = '<div class="alert-success">Produk berhasil ditambahkan ke keranjang!</div>';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -13,37 +28,57 @@
     </style>
 </head>
 <body class="dashboard-body">
+    <?php if (isset($_GET['pesan']) && $_GET['pesan'] === 'berhasil'): ?>
+        <div style="background: #d4edda; color: #155724; padding: 15px; text-align: center; margin: 10px;">
+            ✅ Produk berhasil ditambahkan ke keranjang!
+        </div>
+    <?php endif; ?>
     <!-- Header -->
-<header class="header" id="header">
-    <!-- Hamburger + Logo dikelompokkan dalam satu div -->
-    <div class="header-start" style="display: flex; align-items: center; gap: 12px;">
-        <div class="hamburger-menu" id="hamburgerMenu">
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
+    <header class="header" id="header">
+        <!-- Hamburger + Logo dikelompokkan dalam satu div -->
+        <div class="header-start" style="display: flex; align-items: center; gap: 12px;">
+            <div class="hamburger-menu" id="hamburgerMenu">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </div>
+            <div >
+                <img src="../assets/css/js/gambar/logo.png" alt="Poskoria Logo" class="logo">
+            </div>
         </div>
-        <div >
-            <img src="../assets/css/js/gambar/logo.png" alt="Poskoria Logo" class="logo">
+
+        <!-- Navigasi -->
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="dashboard.php">Beranda</a></li>
+                <li><a href="semua_produk.php">Produk</a></li>
+                <li><a href="../views/dashboard.php#tentang-kami">Tentang Kami</a></li>
+                <li><a href="../views/dashboard.php#kontak">Kontak</a></li>
+
+                <!-- Dropdown Lainnya -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Lainnya</a>
+                    <div class="dropdown-menu">
+                        <a href="../views/dashboard.php#testimoni">Testimoni</a>
+                        <a href="../views/dashboard.php#faq">FAQ</a>
+                        <a href="../views/dashboard.php#syarat-ketentuan">Syarat & Ketentuan</a>
+                        <a href="../views/dashboard.php#syarat-ketentuan">Kebijakan Privasi</a>
+                        <a href="../views/logout.php">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Ikon -->
+        <div class="header-icons">
+            <a href="../views/keranjang.php">
+                <div class="cart-icon" href=>🛒</div>
+            </a>
+            <a href="../views/profile.php">
+                <div class="user-icon">👤</div>
+            </a>
         </div>
-    </div>
-
-    <!-- Navigasi -->
-    <nav class="nav-menu">
-        <ul>
-            <li><a href="../views/dashboard.php">Beranda</a></li>
-            <li><a href="semua_produk.php" class="active">Produk</a></li>
-            <li><a href="../views/dashboard.php#tentang-kami">Tentang Kami</a></li>
-            <li><a href="../views/dashboard.php#kontak">Kontak</a></li>
-            <li><a href="#">Lainnya</a></li>
-        </ul>
-    </nav>
-
-    <!-- Ikon -->
-    <div class="header-icons">
-        <div class="cart-icon">🛒</div>
-        <div class="user-icon">👤</div>
-    </div>
-</header>
+    </header>
 
     <!-- Mobile Navigation Menu -->
     <div class="mobile-nav" id="mobileNav">
@@ -53,7 +88,11 @@
             <li><a href="semua_produk.php" class="active">Produk</a></li>
             <li><a href="../views/dashboard.php#tentang-kami">Tentang Kami</a></li>
             <li><a href="../views/dashboard.php#kontak">Kontak</a></li>
-            <li><a href="#">Lainnya</a></li>
+            <li><a href="../views/dashboard.php#testimoni">Testimoni</a></li>
+            <li><a href="../views/dashboard.php#faq">FAQ</a></li>
+            <li><a href="../views/dashboard.php#syarat-ketentuan">Syarat & Ketentuan</a></li>
+            <li><a href="../views/dashboard.php#syarat-ketentuan">Kebijakan Privasi</a></li>
+            <li><a href="../views/logout.php">Logout</a></li>
         </ul>
     </div>
 
@@ -74,42 +113,43 @@
             </div>
             
             <!-- Products Grid -->
-<div class="products-grid">
-    <?php
-    require_once '../config/koneksi.php';
+            <div class="products-grid">
+                <?php
+                require_once '../config/koneksi.php';
 
-    // Ambil semua data menu dari database
-    $query = "SELECT * FROM menu ORDER BY kategori, nama_menu";
-    $result = $koneksi->query($query);
+                // Ambil semua data menu dari database
+                $query = "SELECT * FROM menu ORDER BY kategori, nama_menu";
+                $result = $koneksi->query($query);
 
-    if ($result && $result->num_rows > 0):
-        while ($row = $result->fetch_assoc()):
-            // Bersihkan kategori untuk digunakan sebagai data-category (lowercase, tanpa spasi)
-            $kategori_slug = strtolower(str_replace(' ', '', $row['kategori']));
-    ?>
-            <div class="product-card" data-category="<?= htmlspecialchars($kategori_slug) ?>">
-                <img src="<?= !empty($row['gambar']) ? htmlspecialchars($row['gambar']) : 'https://placehold.co/300x300' ?>" 
-                     alt="<?= htmlspecialchars($row['nama_menu']) ?>">
-                <div class="product-info">
-                    <span class="category"><?= htmlspecialchars(ucfirst($row['kategori'])) ?></span>
-                    <h3><?= htmlspecialchars($row['nama_menu']) ?></h3>
-                    <p><?= htmlspecialchars($row['deskripsi']) ?></p>
-                    <div class="price-action">
-                        <span class="price">Rp <?= number_format($row['harga'], 0, ',', '.') ?></span>
-                        <div class="action-buttons">
-                            <button class="heart-btn">♥</button>
-                            <button class="buy-btn">Beli</button>
+                if ($result && $result->num_rows > 0):
+                    while ($row = $result->fetch_assoc()):
+                        // Bersihkan kategori untuk digunakan sebagai data-category
+                        $kategori_slug = strtolower(str_replace(' ', '', $row['kategori']));
+                ?>
+                        <div class="product-card" data-category="<?= htmlspecialchars($kategori_slug) ?>">
+                            <img src="<?= !empty($row['gambar']) ? htmlspecialchars($row['gambar']) : 'https://placehold.co/300x300' ?>" 
+                                alt="<?= htmlspecialchars($row['nama_menu']) ?>">
+                            <div class="product-info">
+                                <span class="category"><?= htmlspecialchars(ucfirst($row['kategori'])) ?></span>
+                                <h3><?= htmlspecialchars($row['nama_menu']) ?></h3>
+                                <p><?= htmlspecialchars($row['deskripsi']) ?></p>
+                                <div class="price-action">
+                                    <span class="price">Rp <?= number_format($row['harga'], 0, ',', '.') ?></span>
+                                    <div class="action-buttons">
+                                        <button class="heart-btn">♥</button>
+                                        <a href="detail_produk.php?id_menu=<?= $row['id_menu'] ?>" class="buy-btn">Beli</a>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                <?php
+                    endwhile;
+                else:
+                ?>
+                    <p style="grid-column: 1 / -1; text-align: center; color: #666;">Belum ada produk tersedia.</p>
+                <?php endif; ?>
             </div>
-    <?php
-        endwhile;
-    else:
-    ?>
-        <p style="grid-column: 1 / -1; text-align: center; color: #666;">Belum ada produk tersedia.</p>
-    <?php endif; ?>
-</div>
         </section>
     </main>
 
@@ -126,7 +166,7 @@
     </footer>
 
     <script>
-        // Smooth scroll untuk navigasi internal (jika ada anchor links)
+        // Smooth scroll untuk navigasi internal
         document.addEventListener('DOMContentLoaded', function() {
             // Hamburger menu functionality
             const hamburgerMenu = document.getElementById('hamburgerMenu');
