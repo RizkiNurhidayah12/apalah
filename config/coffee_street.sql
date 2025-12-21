@@ -86,6 +86,9 @@ CREATE TABLE pesanan (
     ON UPDATE CASCADE
 );
 
+-- Penambahan kolom metode_bayar
+ALTER TABLE pesanan 
+ADD COLUMN metode_bayar VARCHAR(20) DEFAULT 'qris' AFTER status;
 
 CREATE TABLE detail_pesanan (
   id_detail INT AUTO_INCREMENT PRIMARY KEY,
